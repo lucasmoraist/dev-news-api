@@ -62,10 +62,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        return this.repository.findByEmail(email)
+        User user = this.repository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("Usuário não encontrado com email: {}", email);
                     return new IllegalArgumentException("Email ou senha inválidos");
                 });
+        log.info("Usuário encontrado");
+        return user;
     }
 }

@@ -5,12 +5,16 @@ import com.devnews.api.domain.dto.post.PostRequest;
 import com.devnews.api.domain.dto.post.PostResponse;
 import com.devnews.api.domain.dto.post.PostSearchResponse;
 import com.devnews.api.domain.entity.Post;
+import com.devnews.api.domain.entity.User;
 import com.devnews.api.repository.PostRepository;
 import com.devnews.api.service.PostService;
+import com.devnews.api.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,15 +23,24 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository repository;
+    private final UserService userService;
 
-    public PostServiceImpl(PostRepository repository) {
+    public PostServiceImpl(PostRepository repository, UserService userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
+    @Transactional
     @Override
     public PostResponse savePost(PostRequest request) {
-        Post post = this.repository.save(new Post(request));
+        String email = this.recoverLoggedEmail();
+        User user = this.userService.getUserByEmail(email);
+
+        Post post = new Post(request);
+        post.setAuthor(user);
+        this.repository.save(post);
         log.info("Post salvo com sucesso: {}", post);
+
         return new PostResponse(post);
     }
 
@@ -60,17 +73,32 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse updatePost(Long id, PostRequest request) {
         Post post = this.getPostEntityById(id);
+
+        String email = this.recoverLoggedEmail();
+        if (!post.getAuthor().getEmail().equals(email)) {
+            log.error("Permissão negada para editar post.");
+            throw new IllegalArgumentException("Você não tem permissão para editar este post.");
+        }
+
         post.update(request);
         log.info("Atualizando post: {}", post);
+
         this.repository.save(post);
         log.info("Post atualizado com sucesso");
+
         return new PostResponse(post);
     }
 
     @Override
     public void deletePostById(Long id) {
         Post post = this.getPostEntityById(id);
-        log.info("Deletando post: {}", post);
+
+        String email = this.recoverLoggedEmail();
+        if (!post.getAuthor().getEmail().equals(email)) {
+            log.error("Permissão negada para deletar post.");
+            throw new IllegalArgumentException("Você não tem permissão para deletar este post.");
+        }
+
         this.repository.delete(post);
         log.info("Post deletado com sucesso");
     }
@@ -85,5 +113,15 @@ public class PostServiceImpl implements PostService {
                 });
         log.info("Post encontrado: {}", post);
         return post;
+    }
+
+    private String recoverLoggedEmail() {
+        // Recupera o email do usuário logado a partir do token passado na requisição
+        String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (loggedEmail.equals("anonymousUser")) {
+            throw new IllegalArgumentException("Você precisa não está logado para realizar esta ação.");
+        }
+        return loggedEmail;
     }
 }
