@@ -47,11 +47,7 @@ public class UserServiceImpl implements UserService {
     public LoginResponse signIn(LoginRequest request) {
         log.info("Autenticando usuário com email: {}", request.email());
 
-        User user = this.repository.findByEmail(request.email())
-                .orElseThrow(() -> {
-                    log.error("Usuário não encontrado com email: {}", request.email());
-                    return new IllegalArgumentException("Email ou senha inválidos");
-                });
+        User user = this.getUserByEmail(request.email());
 
         if (!this.passwordEncoder.matches(request.password(), user.getPassword())) {
             log.error("Senha inválida para o usuário com email: {}", request.email());
@@ -62,5 +58,14 @@ public class UserServiceImpl implements UserService {
         log.info("Token gerado para usuário com email: {}", user.getEmail());
 
         return new LoginResponse(token, user.getEmail());
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return this.repository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("Usuário não encontrado com email: {}", email);
+                    return new IllegalArgumentException("Email ou senha inválidos");
+                });
     }
 }
