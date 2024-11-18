@@ -52,13 +52,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse getPostById(Long id) {
-        Post post = this.findPost(id);
+        Post post = this.getPostEntityById(id);
         return new PostResponse(post);
     }
 
     @Override
     public PostResponse updatePost(Long id, PostRequest request) {
-        Post post = this.findPost(id);
+        Post post = this.getPostEntityById(id);
         post.update(request);
         log.info("Atualizando post: {}", post);
         this.repository.save(post);
@@ -68,13 +68,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long id) {
-        Post post = this.findPost(id);
+        Post post = this.getPostEntityById(id);
         log.info("Deletando post: {}", post);
         this.repository.delete(post);
         log.info("Post deletado com sucesso");
     }
 
-    private Post findPost(Long id) {
+    @Override
+    public Post getPostEntityById(Long id) {
         log.info("Buscando post com id {}", id);
         Post post = this.repository.findById(id)
                 .orElseThrow(() -> {
