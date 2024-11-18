@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,12 +28,12 @@ public class Post {
     private String imageBanner;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author", nullable = false)
     private User author;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
