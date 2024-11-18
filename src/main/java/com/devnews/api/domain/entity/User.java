@@ -30,9 +30,9 @@ public class User {
     private RoleEnum role;
 
     public User(UserRequest request) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+        this.name = request.name();
+        this.email = request.email();
+        this.password = request.password();
         this.role = RoleEnum.USER;
     }
 
