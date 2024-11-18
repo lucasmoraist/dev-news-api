@@ -6,6 +6,8 @@ import com.devnews.api.domain.dto.post.PostResponse;
 import com.devnews.api.domain.dto.post.PostSearchResponse;
 import com.devnews.api.domain.entity.Post;
 import com.devnews.api.domain.entity.User;
+import com.devnews.api.domain.exception.IllegalPermissionException;
+import com.devnews.api.domain.exception.ResourceNotFound;
 import com.devnews.api.repository.PostRepository;
 import com.devnews.api.service.PostService;
 import com.devnews.api.service.UserService;
@@ -77,7 +79,7 @@ public class PostServiceImpl implements PostService {
         String email = this.recoverLoggedEmail();
         if (!post.getAuthor().getEmail().equals(email)) {
             log.error("Permissão negada para editar post.");
-            throw new IllegalArgumentException("Você não tem permissão para editar este post.");
+            throw new IllegalPermissionException("Você não tem permissão para editar este post.");
         }
 
         post.update(request);
@@ -96,7 +98,7 @@ public class PostServiceImpl implements PostService {
         String email = this.recoverLoggedEmail();
         if (!post.getAuthor().getEmail().equals(email)) {
             log.error("Permissão negada para deletar post.");
-            throw new IllegalArgumentException("Você não tem permissão para deletar este post.");
+            throw new IllegalPermissionException("Você não tem permissão para deletar este post.");
         }
 
         this.repository.delete(post);
@@ -109,7 +111,7 @@ public class PostServiceImpl implements PostService {
         Post post = this.repository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Post com id {} não encontrado", id);
-                    return new RuntimeException("Post não encontrado");
+                    return new ResourceNotFound("Post não encontrado");
                 });
         log.info("Post encontrado: {}", post);
         return post;
@@ -120,7 +122,7 @@ public class PostServiceImpl implements PostService {
         String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (loggedEmail.equals("anonymousUser")) {
-            throw new IllegalArgumentException("Você precisa não está logado para realizar esta ação.");
+            throw new IllegalPermissionException("Você não está logado para realizar esta ação.");
         }
         return loggedEmail;
     }

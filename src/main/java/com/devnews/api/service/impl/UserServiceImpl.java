@@ -4,6 +4,8 @@ import com.devnews.api.domain.dto.user.LoginRequest;
 import com.devnews.api.domain.dto.user.LoginResponse;
 import com.devnews.api.domain.dto.user.UserRequest;
 import com.devnews.api.domain.entity.User;
+import com.devnews.api.domain.exception.AlreadyExistException;
+import com.devnews.api.domain.exception.CredentialsAccessException;
 import com.devnews.api.infra.security.TokenService;
 import com.devnews.api.repository.UserRepository;
 import com.devnews.api.service.UserService;
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
         if (existsEmail.isPresent()) {
             log.error("Email já cadastrado: {}", request.email());
-            throw new IllegalArgumentException("Email já cadastrado");
+            throw new AlreadyExistException("Email já cadastrado");
         }
 
         User user = new User(request);
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
         if (!this.passwordEncoder.matches(request.password(), user.getPassword())) {
             log.error("Senha inválida para o usuário com email: {}", request.email());
-            throw new IllegalArgumentException("Email ou senha inválidos");
+            throw new CredentialsAccessException("Email ou senha inválidos");
         }
 
         String token = this.tokenService.generateToken(user.getEmail());
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
         User user = this.repository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("Usuário não encontrado com email: {}", email);
-                    return new IllegalArgumentException("Email ou senha inválidos");
+                    return new CredentialsAccessException("Email ou senha inválidos");
                 });
         log.info("Usuário encontrado");
         return user;

@@ -5,6 +5,8 @@ import com.devnews.api.domain.dto.comment.CommentResponse;
 import com.devnews.api.domain.entity.Comment;
 import com.devnews.api.domain.entity.Post;
 import com.devnews.api.domain.entity.User;
+import com.devnews.api.domain.exception.IllegalPermissionException;
+import com.devnews.api.domain.exception.ResourceNotFound;
 import com.devnews.api.repository.CommentRepository;
 import com.devnews.api.service.CommentService;
 import com.devnews.api.service.PostService;
@@ -56,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
         String email = this.recoverLoggedEmail();
         if (!comment.getUser().getEmail().equals(email)) {
             log.error("Permissão negada para editar comentário.");
-            throw new IllegalArgumentException("Você não tem permissão para editar este comentário.");
+            throw new IllegalPermissionException("Você não tem permissão para editar este comentário.");
         }
 
         comment.setContent(request.content());
@@ -73,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
         String email = this.recoverLoggedEmail();
         if (!comment.getUser().getEmail().equals(email)) {
             log.error("Permissão negada para deletar comentário.");
-            throw new IllegalArgumentException("Você não tem permissão para deletar este comentário.");
+            throw new IllegalPermissionException("Você não tem permissão para deletar este comentário.");
         }
 
         this.repository.delete(comment);
@@ -85,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = this.repository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Comentário não encontrado.");
-                    return new IllegalArgumentException("Comentário não encontrado.");
+                    return new ResourceNotFound("Comentário não encontrado.");
                 });
         log.info("Comentário encontrado: {}", comment);
 
@@ -97,7 +99,7 @@ public class CommentServiceImpl implements CommentService {
         String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (loggedEmail.equals("anonymousUser")) {
-            throw new IllegalArgumentException("Você precisa não está logado para realizar esta ação.");
+            throw new IllegalPermissionException("Você não está logado para realizar esta ação.");
         }
         return loggedEmail;
     }
