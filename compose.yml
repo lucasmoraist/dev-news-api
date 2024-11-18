@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: devnews-db
+    image: mysql:8.0-debian
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - mysql_network
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  mysql_network:
+    driver: bridge
