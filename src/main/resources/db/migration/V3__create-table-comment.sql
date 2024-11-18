@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS comment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content VARCHAR(255) NOT NULL,
-    user_id BINARY(26) NOT NULL,
+    user_id BINARY(16) NOT NULL,
     post_id INT NOT NULL
 );
 
