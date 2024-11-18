@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS comment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content VARCHAR(255) NOT NULL,
+    user_id BINARY(26) NOT NULL,
+    post_id INT NOT NULL
+);
+
+ALTER TABLE comment ADD FOREIGN KEY (user_id) REFERENCES user (id);
+ALTER TABLE comment ADD FOREIGN KEY (post_id) REFERENCES post (id);
