@@ -1,5 +1,6 @@
 package com.devnews.api.controller;
 
+import com.devnews.api.domain.dto.post.PostListResponse;
 import com.devnews.api.domain.dto.post.PostRequest;
 import com.devnews.api.domain.dto.post.PostResponse;
 import com.devnews.api.domain.dto.post.PostSearchResponse;
@@ -36,7 +37,7 @@ public class PostController {
     }
 
     @GetMapping("v1")
-    public ResponseEntity<Page<PostResponse>> pagination(
+    public ResponseEntity<Page<PostListResponse>> pagination(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {

@@ -1,6 +1,9 @@
 package com.devnews.api.domain.dto.post;
 
+import com.devnews.api.domain.dto.comment.CommentResponse;
 import com.devnews.api.domain.entity.Post;
+
+import java.util.List;
 
 public record PostResponse(
         Long id,
@@ -8,7 +11,8 @@ public record PostResponse(
         String content,
         String imageBanner,
         String createdAt,
-        String updatedAt
+        String updatedAt,
+        List<CommentResponse> comments
 ) {
     public PostResponse(Post post) {
         this(
@@ -17,7 +21,11 @@ public record PostResponse(
                 post.getContent(),
                 post.getImageBanner(),
                 post.getCreatedAt().toString(),
-                post.getUpdatedAt().toString()
+                post.getUpdatedAt().toString(),
+                post.getComments()
+                        .stream()
+                        .map(CommentResponse::new)
+                        .toList()
         );
     }
 }

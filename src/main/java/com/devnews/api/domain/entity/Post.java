@@ -2,14 +2,12 @@ package com.devnews.api.domain.entity;
 
 import com.devnews.api.domain.dto.post.PostRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +25,10 @@ public class Post {
     private String content;
     @Column(name = "image_banner", nullable = false)
     private String imageBanner;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Comment> comments;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

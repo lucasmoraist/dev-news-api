@@ -1,5 +1,6 @@
 package com.devnews.api.service.impl;
 
+import com.devnews.api.domain.dto.post.PostListResponse;
 import com.devnews.api.domain.dto.post.PostRequest;
 import com.devnews.api.domain.dto.post.PostResponse;
 import com.devnews.api.domain.dto.post.PostSearchResponse;
@@ -31,13 +32,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostResponse> getPosts(int page, int size) {
+    public Page<PostListResponse> getPosts(int page, int size) {
         log.info("Buscando posts da página {} com tamanho {}", page, size);
         Pageable pageable = Pageable
                 .ofSize(size)
                 .withPage(page);
         return this.repository.findAll(pageable)
-                .map(PostResponse::new);
+                .map(PostListResponse::new);
     }
 
     @Override
