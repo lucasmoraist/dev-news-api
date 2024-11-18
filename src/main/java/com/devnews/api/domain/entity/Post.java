@@ -26,6 +26,10 @@ public class Post {
     @Column(name = "image_banner", nullable = false)
     private String imageBanner;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Comment> comments;
