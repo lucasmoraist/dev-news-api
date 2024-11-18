@@ -1,5 +1,6 @@
 package com.devnews.api.domain.entity;
 
+import com.devnews.api.domain.dto.PostRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,5 +32,23 @@ public class Post {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public Post(PostRequest request) {
+        this.title = request.title();
+        this.content = request.content();
+        this.imageBanner = request.imageBanner();
+    }
+
+    public void update(PostRequest request) {
+        if (request.title() != null) {
+            this.title = request.title();
+        }
+        if (request.content() != null) {
+            this.content = request.content();
+        }
+        if (request.imageBanner() != null) {
+            this.imageBanner = request.imageBanner();
+        }
+    }
 
 }
