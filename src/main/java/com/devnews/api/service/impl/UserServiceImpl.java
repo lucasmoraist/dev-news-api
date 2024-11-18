@@ -4,9 +4,11 @@ import com.devnews.api.domain.dto.user.LoginRequest;
 import com.devnews.api.domain.dto.user.LoginResponse;
 import com.devnews.api.domain.dto.user.UserRequest;
 import com.devnews.api.domain.entity.User;
+import com.devnews.api.infra.security.TokenService;
 import com.devnews.api.repository.UserRepository;
 import com.devnews.api.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,9 +16,13 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
+    private final TokenService tokenService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, TokenService tokenService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.tokenService = tokenService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,6 +36,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User(request);
+        user.setPassword(this.passwordEncoder.encode(request.password()));
         log.info("Salvando usuário: {}", user);
 
         this.repository.save(user);
@@ -43,16 +50,17 @@ public class UserServiceImpl implements UserService {
         User user = this.repository.findByEmail(request.email())
                 .orElseThrow(() -> {
                     log.error("Usuário não encontrado com email: {}", request.email());
-                    return new IllegalArgumentException("Usuário não encontrado");
+                    return new IllegalArgumentException("Email ou senha inválidos");
                 });
 
-        if (!request.password().equals(user.getPassword())) {
+        if (!this.passwordEncoder.matches(request.password(), user.getPassword())) {
             log.error("Senha inválida para o usuário com email: {}", request.email());
-            throw new IllegalArgumentException("Senha inválida");
+            throw new IllegalArgumentException("Email ou senha inválidos");
         }
 
-        log.info("Usuário autenticado com sucesso: {}", user);
+        String token = this.tokenService.generateToken(user.getEmail());
+        log.info("Token gerado para usuário com email: {}", user.getEmail());
 
-        return new LoginResponse("token", user.getEmail());
+        return new LoginResponse(token, user.getEmail());
     }
 }

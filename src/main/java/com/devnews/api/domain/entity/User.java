@@ -1,7 +1,6 @@
 package com.devnews.api.domain.entity;
 
 import com.devnews.api.domain.dto.user.UserRequest;
-import com.devnews.api.domain.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,14 +25,11 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Enumerated(EnumType.STRING)
-    private RoleEnum role;
 
     public User(UserRequest request) {
         this.name = request.name();
         this.email = request.email();
         this.password = request.password();
-        this.role = RoleEnum.USER;
     }
 
 }
