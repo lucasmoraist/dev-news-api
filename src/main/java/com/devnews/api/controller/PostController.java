@@ -1,8 +1,8 @@
 package com.devnews.api.controller;
 
-import com.devnews.api.domain.dto.PostRequest;
-import com.devnews.api.domain.dto.PostResponse;
-import com.devnews.api.domain.dto.PostSearchResponse;
+import com.devnews.api.domain.dto.post.PostRequest;
+import com.devnews.api.domain.dto.post.PostResponse;
+import com.devnews.api.domain.dto.post.PostSearchResponse;
 import com.devnews.api.service.PostService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

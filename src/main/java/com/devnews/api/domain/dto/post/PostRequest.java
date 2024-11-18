@@ -1,4 +1,4 @@
-package com.devnews.api.domain.dto;
+package com.devnews.api.domain.dto.post;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

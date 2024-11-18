@@ -1,4 +1,4 @@
-package com.devnews.api.domain.dto;
+package com.devnews.api.domain.dto.post;
 
 import com.devnews.api.domain.entity.Post;
 

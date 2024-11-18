@@ -1,8 +1,8 @@
 package com.devnews.api.service;
 
-import com.devnews.api.domain.dto.PostRequest;
-import com.devnews.api.domain.dto.PostResponse;
-import com.devnews.api.domain.dto.PostSearchResponse;
+import com.devnews.api.domain.dto.post.PostRequest;
+import com.devnews.api.domain.dto.post.PostResponse;
+import com.devnews.api.domain.dto.post.PostSearchResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
