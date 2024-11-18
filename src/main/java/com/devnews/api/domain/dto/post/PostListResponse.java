@@ -6,6 +6,7 @@ public record PostListResponse(
         Long id,
         String title,
         String imageBanner,
+        String author,
         String updatedAt
 ) {
     public PostListResponse(Post post) {
@@ -13,6 +14,7 @@ public record PostListResponse(
                 post.getId(),
                 post.getTitle(),
                 post.getImageBanner(),
+                post.getAuthor().getName(),
                 post.getUpdatedAt().toString()
         );
     }

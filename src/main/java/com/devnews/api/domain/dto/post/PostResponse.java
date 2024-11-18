@@ -6,21 +6,19 @@ import com.devnews.api.domain.entity.Post;
 import java.util.List;
 
 public record PostResponse(
-        Long id,
         String title,
         String content,
         String imageBanner,
-        String createdAt,
+        String author,
         String updatedAt,
         List<CommentResponse> comments
 ) {
     public PostResponse(Post post) {
         this(
-                post.getId(),
                 post.getTitle(),
                 post.getContent(),
                 post.getImageBanner(),
-                post.getCreatedAt().toString(),
+                post.getAuthor().getName(),
                 post.getUpdatedAt().toString(),
                 post.getComments()
                         .stream()
