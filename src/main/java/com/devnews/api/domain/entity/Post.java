@@ -1,6 +1,6 @@
 package com.devnews.api.domain.entity;
 
-import com.devnews.api.domain.dto.PostRequest;
+import com.devnews.api.domain.dto.post.PostRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
