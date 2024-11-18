@@ -4,6 +4,7 @@ import com.devnews.api.domain.dto.user.LoginRequest;
 import com.devnews.api.domain.dto.user.LoginResponse;
 import com.devnews.api.domain.dto.user.UserRequest;
 import com.devnews.api.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/user")
+@Tag(name = "User", description = "Requisições relacionadas a usuários")
 public class UserController {
 
     @Autowired

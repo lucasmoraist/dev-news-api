@@ -5,6 +5,7 @@ import com.devnews.api.domain.dto.post.PostRequest;
 import com.devnews.api.domain.dto.post.PostResponse;
 import com.devnews.api.domain.dto.post.PostSearchResponse;
 import com.devnews.api.service.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/post")
+@Tag(name = "Post", description = "Requisições para manipulação de posts")
 public class PostController {
 
     @Autowired

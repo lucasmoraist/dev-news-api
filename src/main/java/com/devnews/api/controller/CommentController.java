@@ -3,6 +3,7 @@ package com.devnews.api.controller;
 import com.devnews.api.domain.dto.comment.CommentRequest;
 import com.devnews.api.domain.dto.comment.CommentResponse;
 import com.devnews.api.service.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/comment")
+@Tag(name = "Comment", description = "Requisições relacionadas a comentários")
 public class CommentController {
 
     @Autowired
