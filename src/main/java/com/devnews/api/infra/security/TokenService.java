@@ -3,6 +3,7 @@ package com.devnews.api.infra.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.devnews.api.domain.exception.TokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,10 @@ public class TokenService {
     private String token;
 
     public String generateToken(String email) {
+        if (this.token == null || this.token.isEmpty()) {
+            log.error("Chave secreta não configurada");
+            throw new TokenException("Chave secreta não configurada");
+        }
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.token);
             String token = JWT.create()

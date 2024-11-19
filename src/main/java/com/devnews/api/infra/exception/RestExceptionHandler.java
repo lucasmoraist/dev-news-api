@@ -1,9 +1,6 @@
 package com.devnews.api.infra.exception;
 
-import com.devnews.api.domain.exception.AlreadyExistException;
-import com.devnews.api.domain.exception.CredentialsAccessException;
-import com.devnews.api.domain.exception.IllegalPermissionException;
-import com.devnews.api.domain.exception.ResourceNotFound;
+import com.devnews.api.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +69,12 @@ public class RestExceptionHandler {
     protected ResponseEntity<String> handleIllegalPermissionException(IllegalPermissionException ex) {
         log.warn("Permissão negada: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(TokenException.class)
+    protected ResponseEntity<String> handleTokenException(TokenException ex) {
+        log.warn("Token inválido: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
