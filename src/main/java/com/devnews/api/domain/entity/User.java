@@ -12,8 +12,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
-@Entity(name = "user")
+@Table(name = "t_user")
+@Entity(name = "t_user")
 @EqualsAndHashCode(of = "id")
 public class User {
 

@@ -13,8 +13,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "post")
-@Entity(name = "post")
+@Table(name = "t_post")
+@Entity(name = "t_post")
 @EqualsAndHashCode(of = "id")
 public class Post {
 

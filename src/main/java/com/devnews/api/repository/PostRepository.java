@@ -12,7 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("""
             SELECT p
-            FROM post p
+            FROM t_post p
             WHERE LOWER(p.title)
             LIKE LOWER(CONCAT('%', :title, '%'))
             """)

@@ -9,8 +9,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "comment")
-@Entity(name = "comment")
+@Table(name = "t_comment")
+@Entity(name = "t_comment")
 @EqualsAndHashCode(of = "id")
 public class Comment {
 
