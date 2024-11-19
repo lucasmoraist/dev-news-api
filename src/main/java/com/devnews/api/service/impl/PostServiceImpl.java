@@ -8,13 +8,13 @@ import com.devnews.api.domain.entity.Post;
 import com.devnews.api.domain.entity.User;
 import com.devnews.api.domain.exception.IllegalPermissionException;
 import com.devnews.api.domain.exception.ResourceNotFound;
+import com.devnews.api.infra.security.TokenService;
 import com.devnews.api.repository.PostRepository;
 import com.devnews.api.service.PostService;
 import com.devnews.api.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,16 +26,18 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository repository;
     private final UserService userService;
+    private final TokenService tokenService;
 
-    public PostServiceImpl(PostRepository repository, UserService userService) {
+    public PostServiceImpl(PostRepository repository, UserService userService, TokenService tokenService) {
         this.repository = repository;
         this.userService = userService;
+        this.tokenService = tokenService;
     }
 
     @Transactional
     @Override
     public PostResponse savePost(PostRequest request) {
-        String email = this.recoverLoggedEmail();
+        String email = this.tokenService.recoverLoggedEmail();
         User user = this.userService.getUserByEmail(email);
 
         Post post = new Post(request);
@@ -76,7 +78,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse updatePost(Long id, PostRequest request) {
         Post post = this.getPostEntityById(id);
 
-        String email = this.recoverLoggedEmail();
+        String email = this.tokenService.recoverLoggedEmail();
         if (!post.getAuthor().getEmail().equals(email)) {
             log.error("Permissão negada para editar post.");
             throw new IllegalPermissionException("Você não tem permissão para editar este post.");
@@ -95,7 +97,7 @@ public class PostServiceImpl implements PostService {
     public void deletePostById(Long id) {
         Post post = this.getPostEntityById(id);
 
-        String email = this.recoverLoggedEmail();
+        String email = this.tokenService.recoverLoggedEmail();
         if (!post.getAuthor().getEmail().equals(email)) {
             log.error("Permissão negada para deletar post.");
             throw new IllegalPermissionException("Você não tem permissão para deletar este post.");
@@ -117,13 +119,4 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    private String recoverLoggedEmail() {
-        // Recupera o email do usuário logado a partir do token passado na requisição
-        String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        if (loggedEmail.equals("anonymousUser")) {
-            throw new IllegalPermissionException("Você não está logado para realizar esta ação.");
-        }
-        return loggedEmail;
-    }
 }

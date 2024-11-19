@@ -7,28 +7,25 @@ import com.devnews.api.domain.entity.Post;
 import com.devnews.api.domain.entity.User;
 import com.devnews.api.domain.exception.IllegalPermissionException;
 import com.devnews.api.domain.exception.ResourceNotFound;
+import com.devnews.api.infra.security.TokenService;
 import com.devnews.api.repository.CommentRepository;
 import com.devnews.api.service.CommentService;
 import com.devnews.api.service.PostService;
 import com.devnews.api.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final PostService postService;
     private final UserService userService;
     private final CommentRepository repository;
-
-    public CommentServiceImpl(PostService postService, UserService userService, CommentRepository repository) {
-        this.postService = postService;
-        this.userService = userService;
-        this.repository = repository;
-    }
+    private final TokenService tokenService;
 
     @Transactional
     @Override
@@ -36,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
         Post post = this.postService.getPostEntityById(postId);
         log.info("Post encontrado: {}", post);
 
-        String email = this.recoverLoggedEmail();
+        String email = this.tokenService.recoverLoggedEmail();
         User user = this.userService.getUserByEmail(email);
         log.info("Usuário encontrado: {}", user);
 
@@ -55,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse updateComment(Long commentId, CommentRequest request) {
         Comment comment = this.getCommentById(commentId);
 
-        String email = this.recoverLoggedEmail();
+        String email = this.tokenService.recoverLoggedEmail();
         if (!comment.getUser().getEmail().equals(email)) {
             log.error("Permissão negada para editar comentário.");
             throw new IllegalPermissionException("Você não tem permissão para editar este comentário.");
@@ -72,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId) {
         Comment comment = this.getCommentById(commentId);
 
-        String email = this.recoverLoggedEmail();
+        String email = this.tokenService.recoverLoggedEmail();
         if (!comment.getUser().getEmail().equals(email)) {
             log.error("Permissão negada para deletar comentário.");
             throw new IllegalPermissionException("Você não tem permissão para deletar este comentário.");
@@ -92,15 +89,5 @@ public class CommentServiceImpl implements CommentService {
         log.info("Comentário encontrado: {}", comment);
 
         return comment;
-    }
-
-    private String recoverLoggedEmail() {
-        // Recupera o email do usuário logado a partir do token passado na requisição
-        String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        if (loggedEmail.equals("anonymousUser")) {
-            throw new IllegalPermissionException("Você não está logado para realizar esta ação.");
-        }
-        return loggedEmail;
     }
 }
