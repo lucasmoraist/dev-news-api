@@ -3,9 +3,11 @@ package com.devnews.api.infra.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.devnews.api.domain.exception.IllegalPermissionException;
 import com.devnews.api.domain.exception.TokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -49,6 +51,16 @@ public class TokenService {
             log.error("Erro ao validar token: {}", token, e);
             throw new RuntimeException("Token inválido: ", e);
         }
+    }
+
+    public String recoverLoggedEmail() {
+        // Recupera o email do usuário logado a partir do token passado na requisição
+        String loggedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (loggedEmail.equals("anonymousUser")) {
+            throw new IllegalPermissionException("Você não está logado para realizar esta ação.");
+        }
+        return loggedEmail;
     }
 
 }
