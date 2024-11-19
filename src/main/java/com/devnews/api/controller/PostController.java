@@ -32,8 +32,8 @@ public class PostController {
 
         var response = this.service.savePost(request);
         URI uri = uriBuilder
-                .path("/post/v1/{id}")
-                .buildAndExpand(response.id())
+                .path("/post/v1")
+                .build()
                 .toUri();
         return ResponseEntity.created(uri).body(response);
     }
