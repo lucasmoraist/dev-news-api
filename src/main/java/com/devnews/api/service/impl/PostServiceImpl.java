@@ -10,8 +10,10 @@ import com.devnews.api.domain.exception.IllegalPermissionException;
 import com.devnews.api.domain.exception.ResourceNotFound;
 import com.devnews.api.infra.security.TokenService;
 import com.devnews.api.repository.PostRepository;
+import com.devnews.api.service.ImageService;
 import com.devnews.api.service.PostService;
 import com.devnews.api.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -27,20 +29,16 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
     private final PostRepository repository;
     private final UserService userService;
     private final TokenService tokenService;
+    private final ImageService imageService;
 
     @Value("${upload.dir}")
     private String uploadDir;
-
-    public PostServiceImpl(PostRepository repository, UserService userService, TokenService tokenService) {
-        this.repository = repository;
-        this.userService = userService;
-        this.tokenService = tokenService;
-    }
 
     @Transactional
     @Override
@@ -131,40 +129,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse saveImage(Long postId, MultipartFile file) {
         Post post = this.getPostEntityById(postId);
-        String email = post.getAuthor().getEmail();
 
-        String nameFile = this.uploadImage(email, file);
-        log.info("Nome do arquivo salvo: {}", nameFile);
+        String nameFile = this.imageService.uploadImage(post.getId(), file);
 
         post.setImageBanner(nameFile);
         this.repository.save(post);
-        log.info("Imagem salva com sucesso: {}", post);
 
         return new PostResponse(post);
-    }
-
-    private String uploadImage(String email, MultipartFile file) {
-        try {
-            log.info("Salvando imagem: {}", file.getOriginalFilename());
-            Path directory = Paths.get(uploadDir + email);
-
-            log.info("Verificando se o diretório existe: {}", directory);
-            if (!Files.exists(directory)) {
-                log.info("Diretório não encontrado, criando diretório: {}", directory);
-                Files.createDirectory(directory);
-            }
-
-            log.info("Salvando arquivo: {}", file.getOriginalFilename());
-            Path filePath = directory.resolve(file.getOriginalFilename());
-
-            log.info("Escrevendo arquivo: {}", filePath);
-            Files.write(filePath, file.getBytes());
-
-            return file.getOriginalFilename();
-        } catch (Exception e) {
-            log.error("Erro ao salvar imagem: {}", e.getMessage());
-            throw new RuntimeException("Erro ao salvar imagem");
-        }
     }
 
 }
