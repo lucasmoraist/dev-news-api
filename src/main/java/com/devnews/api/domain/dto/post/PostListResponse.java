@@ -5,6 +5,7 @@ import com.devnews.api.domain.entity.Post;
 public record PostListResponse(
         Long id,
         String title,
+        String content,
         String imageBanner,
         String author,
         String updatedAt
@@ -13,6 +14,7 @@ public record PostListResponse(
         this(
                 post.getId(),
                 post.getTitle(),
+                post.getContent(),
                 post.getImageBanner(),
                 post.getAuthor().getName(),
                 post.getUpdatedAt().toString()
