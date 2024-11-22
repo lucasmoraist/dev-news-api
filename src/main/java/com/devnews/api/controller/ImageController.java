@@ -17,7 +17,7 @@ public class ImageController {
     @Autowired
     private ImageService service;
 
-    @GetMapping("/v1/{filename}")
+    @GetMapping("/v1/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         var response = this.service.getImage(filename);
         return ResponseEntity.ok()
