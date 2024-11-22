@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -27,7 +28,10 @@ public class PostController {
     private PostService service;
 
     @PostMapping("v2")
-    public ResponseEntity<PostResponse> save(@RequestBody @Valid PostRequest request, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<PostResponse> save(
+            @RequestBody @Valid PostRequest request,
+            UriComponentsBuilder uriBuilder
+    ) {
         log.info("Recebendo requisição para salvar um post: {}", request);
 
         var response = this.service.savePost(request);
@@ -36,6 +40,16 @@ public class PostController {
                 .build()
                 .toUri();
         return ResponseEntity.created(uri).body(response);
+    }
+
+    @PatchMapping("v2/{postId}/image")
+    public ResponseEntity<PostResponse> uploadImage(
+            @PathVariable Long postId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        log.info("Recebendo requisição para salvar imagem do post com id: {}", postId);
+        var response = this.service.saveImage(postId, file);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("v1")

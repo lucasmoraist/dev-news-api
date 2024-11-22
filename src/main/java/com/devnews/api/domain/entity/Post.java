@@ -43,7 +43,6 @@ public class Post {
     public Post(PostRequest request) {
         this.title = request.title();
         this.content = request.content();
-        this.imageBanner = request.imageBanner();
     }
 
     public void update(PostRequest request) {
@@ -52,9 +51,6 @@ public class Post {
         }
         if (request.content() != null) {
             this.content = request.content();
-        }
-        if (request.imageBanner() != null) {
-            this.imageBanner = request.imageBanner();
         }
     }
 

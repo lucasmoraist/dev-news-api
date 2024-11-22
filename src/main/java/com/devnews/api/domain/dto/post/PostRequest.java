@@ -7,7 +7,6 @@ public record PostRequest(
         @NotBlank
         @Size(max = 120)
         String title,
-        String content,
-        String imageBanner
+        String content
 ) {
 }
