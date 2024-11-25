@@ -8,6 +8,7 @@ import com.devnews.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class SetupInit implements CommandLineRunner {
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
@@ -33,7 +36,7 @@ public class SetupInit implements CommandLineRunner {
                         null,
                         "John Doe",
                         "john@doe.com",
-                        "123456"
+                        this.passwordEncoder.encode("123456")
                 );
                 this.userRepository.save(user);
             }
@@ -57,23 +60,23 @@ public class SetupInit implements CommandLineRunner {
 
                 Post post1 = new Post(request1);
                 post1.setAuthor(user);
-                post1.setImageBanner("1.jpg");
+                post1.setImageBanner("1.png");
 
                 Post post2 = new Post(request1);
                 post2.setAuthor(user);
-                post2.setImageBanner("2.jpg");
+                post2.setImageBanner("2.png");
 
                 Post post3 = new Post(request1);
                 post3.setAuthor(user);
-                post3.setImageBanner("3.jpg");
+                post3.setImageBanner("3.png");
 
                 Post post4 = new Post(request1);
                 post4.setAuthor(user);
-                post4.setImageBanner("4.jpg");
+                post4.setImageBanner("4.png");
 
                 Post post5 = new Post(request2);
                 post5.setAuthor(user);
-                post5.setImageBanner("5.jpg");
+                post5.setImageBanner("5.png");
 
                 this.postRepository.save(post1);
                 this.postRepository.save(post2);
