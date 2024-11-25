@@ -60,23 +60,18 @@ public class SetupInit implements CommandLineRunner {
 
                 Post post1 = new Post(request1);
                 post1.setAuthor(user);
-                post1.setImageBanner("1.png");
 
                 Post post2 = new Post(request1);
                 post2.setAuthor(user);
-                post2.setImageBanner("2.png");
 
                 Post post3 = new Post(request1);
                 post3.setAuthor(user);
-                post3.setImageBanner("3.png");
 
                 Post post4 = new Post(request1);
                 post4.setAuthor(user);
-                post4.setImageBanner("4.png");
 
                 Post post5 = new Post(request2);
                 post5.setAuthor(user);
-                post5.setImageBanner("5.png");
 
                 this.postRepository.save(post1);
                 this.postRepository.save(post2);
