@@ -49,12 +49,11 @@ public class SetupInit implements CommandLineRunner {
 
     private void initializeUsers() {
         if (userRepository.findAll().isEmpty()) {
-            User user = new User(
-                    null,
-                    DEFAULT_USER_NAME,
-                    DEFAULT_USER_EMAIL,
-                    passwordEncoder.encode(DEFAULT_USER_PASSWORD)
-            );
+            User user = User.builder()
+                    .name(DEFAULT_USER_NAME)
+                    .email(DEFAULT_USER_EMAIL)
+                    .password(passwordEncoder.encode(DEFAULT_USER_PASSWORD))
+                    .build();
             userRepository.save(user);
             log.info("Usuário criado: {}", user);
         }

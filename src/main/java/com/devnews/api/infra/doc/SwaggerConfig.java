@@ -20,8 +20,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(this.info())
                 .servers(List.of(this.server()))
-                .components(components())
-                .addSecurityItem(new SecurityRequirement().addList("bearer"));
+                .components(components());
     }
 
     private Info info() {
