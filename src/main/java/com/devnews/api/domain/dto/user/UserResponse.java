@@ -8,6 +8,7 @@ import java.util.UUID;
 public record UserResponse(
         UUID id,
         String name,
+        String email,
         String password,
         List<UserPostsResponse> posts
 ) {
@@ -15,6 +16,7 @@ public record UserResponse(
         this(
                 user.getId(),
                 user.getName(),
+                user.getEmail(),
                 user.getPassword(),
                 user.getPosts().stream().map(UserPostsResponse::new).toList());
     }
