@@ -3,6 +3,7 @@ package com.devnews.api.service.impl;
 import com.devnews.api.domain.dto.user.LoginRequest;
 import com.devnews.api.domain.dto.user.LoginResponse;
 import com.devnews.api.domain.dto.user.UserRequest;
+import com.devnews.api.domain.dto.user.UserResponse;
 import com.devnews.api.domain.entity.User;
 import com.devnews.api.domain.exception.AlreadyExistException;
 import com.devnews.api.domain.exception.CredentialsAccessException;
@@ -71,5 +72,13 @@ public class UserServiceImpl implements UserService {
                 });
         log.info("Usuário encontrado");
         return user;
+    }
+
+    @Override
+    public UserResponse getUser() {
+        String email = this.tokenService.recoverLoggedEmail();
+        User user = this.getUserByEmail(email);
+
+        return new UserResponse(user);
     }
 }
